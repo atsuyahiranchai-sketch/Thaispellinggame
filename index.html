@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#102a36">
+  <meta name="description" content="เกมฝึกสะกดคำภาษาไทยสำหรับนักเรียน ป.4–ป.6 เอาตัวรอดจากพายุหิมะด้วยการเลือกคำที่สะกดถูกต้อง">
+  <title>ภารกิจพิชิตพายุหิมะ | เกมสะกดคำภาษาไทย</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400;500;600;700&family=Prompt:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1675469240/hands.js" defer></script>
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <main class="game-shell">
+    <header class="topbar">
+      <a class="brand" href="#home" aria-label="ภารกิจพิชิตพายุหิมะ หน้าแรก">
+        <span class="brand-mark" aria-hidden="true">❄</span>
+        <span>ห้องเรียน<span class="brand-light">กลางหิมะ</span></span>
+      </a>
+      <div class="topbar-meta">
+        <span class="season-dot" aria-hidden="true"></span>
+        <span>ศูนย์ฝึกนักสำรวจ</span>
+        <span class="grade-chip" id="gradeBadge">ป.4</span>
+      </div>
+    </header>
+
+    <section class="screen home-screen" id="homeScreen" aria-labelledby="homeTitle">
+      <div class="hero-copy">
+        <p class="eyebrow"><span class="eyebrow-line"></span> ภารกิจนักสำรวจ</p>
+        <h1 id="homeTitle">ภารกิจพิชิต<br><span>พายุหิมะ</span></h1>
+        <p class="intro">เลือกคำให้ถูก แล้วต่อยน้ำแข็งเพื่อหนีพายุ!</p>
+
+        <form class="launch-row" id="startForm">
+          <label class="player-picker" for="playerName">
+            <span>ชื่อนักสำรวจ</span>
+            <input id="playerName" name="playerName" type="text" maxlength="24" autocomplete="given-name" placeholder="พิมพ์ชื่อก่อนเริ่ม" required>
+          </label>
+          <label class="grade-picker" for="gradeSelect">
+            <span>ระดับชั้น</span>
+            <select id="gradeSelect" aria-label="เลือกระดับชั้น">
+              <option value="ป.4">ป.4</option>
+              <option value="ป.5">ป.5</option>
+              <option value="ป.6">ป.6</option>
+            </select>
+          </label>
+          <button class="primary-button" id="startButton" type="submit">
+            <span>ออกเดินทาง</span><span class="button-arrow" aria-hidden="true">↗</span>
+          </button>
+        </form>
+
+        <div class="mission-note">
+          <span class="note-icon" aria-hidden="true">✳</span>
+          <span>10 ข้อ · คำถูก +5 วินาที · คำผิด −5 วินาที</span>
+        </div>
+      </div>
+
+      <div class="hero-art" aria-label="ภาพภูเขาหิมะและนักสำรวจตัวน้อย">
+        <div class="art-caption"><span>สถานีวิจัยเหนือเมฆ</span><span>68° N</span></div>
+        <div class="sun-disc"></div>
+        <span class="art-cloud cloud-one" aria-hidden="true"></span>
+        <span class="art-cloud cloud-two" aria-hidden="true"></span>
+        <span class="art-sparkle sparkle-one" aria-hidden="true">✦</span>
+        <span class="art-sparkle sparkle-two" aria-hidden="true">❄</span>
+        <div class="mountain mountain-back"></div>
+        <div class="mountain mountain-front"></div>
+        <div class="snow-field"></div>
+        <div class="camp-flag">BASE<br>01</div>
+        <div class="explorer" aria-hidden="true"><span class="explorer-pack"></span><span class="explorer-body"></span><span class="explorer-head"></span><span class="explorer-scarf"></span></div>
+        <div class="snow-buddy" aria-hidden="true"><span class="buddy-character"><span class="buddy-ear ear-left"></span><span class="buddy-ear ear-right"></span><span class="buddy-body"></span><span class="buddy-flipper flipper-left"></span><span class="buddy-flipper flipper-right"></span><span class="buddy-scarf"></span><span class="buddy-head"><span class="buddy-eye eye-left"></span><span class="buddy-eye eye-right"></span><span class="buddy-cheek cheek-left"></span><span class="buddy-cheek cheek-right"></span><span class="buddy-nose"></span><span class="buddy-smile"></span></span></span></div>
+        <span class="buddy-bubble" aria-hidden="true">ไปกันเลย!</span>
+        <div class="art-coordinate">N 68° 12' · E 19° 40'</div>
+      </div>
+
+      <section class="scoreboard" aria-labelledby="scoreboardTitle">
+        <div class="scoreboard-heading"><div><p class="scoreboard-kicker">สมุดบันทึกนักสำรวจ</p><h2 id="scoreboardTitle">ผลการเล่นล่าสุด</h2></div><button class="board-link" id="openStatusBoardButton" type="button">ดูคะแนนรวม <span aria-hidden="true">↗</span></button></div>
+        <div class="record-list" id="recordList" aria-live="polite"></div>
+        <p class="record-status" id="recordStatus"></p>
+      </section>
+
+      <footer class="home-footer">
+        <span>สำหรับนักสำรวจ ป.4–ป.6</span>
+        <span class="control-status"><span class="status-dot"></span> ต้องอนุญาตใช้กล้อง</span>
+      </footer>
+    </section>
+
+    <section class="screen status-board-screen hidden" id="statusBoardScreen" aria-labelledby="statusBoardTitle">
+      <div class="board-topline">
+        <button class="text-button" id="boardHomeButton" type="button"><span aria-hidden="true">←</span> กลับหน้าแรก</button>
+        <span class="local-badge">บันทึกในอุปกรณ์นี้</span>
+      </div>
+      <div class="board-content">
+        <p class="eyebrow"><span class="eyebrow-line"></span> EXPLORER LEADERBOARD</p>
+        <div class="board-title-row"><div><h2 id="statusBoardTitle">กระดานคะแนนนักสำรวจ</h2><p>รวมคะแนนเกมและผลทดสอบ แยกตามชื่อกับระดับชั้น</p></div><span class="board-medal" aria-hidden="true">🏆</span></div>
+        <div class="board-summary"><strong id="boardPlayerCount">0</strong><span>นักสำรวจ</span><span class="board-summary-divider"></span><span id="boardRoundCount">0 รอบการเล่น</span></div>
+        <div class="leaderboard-wrap">
+          <table class="leaderboard-table">
+            <thead><tr><th scope="col">อันดับ</th><th scope="col">นักสำรวจ</th><th scope="col">รอบ</th><th scope="col">Pre-test เฉลี่ย</th><th scope="col">Post-test เฉลี่ย</th><th scope="col">คะแนนเกมรวม</th></tr></thead>
+            <tbody id="leaderboardBody"></tbody>
+          </table>
+          <p class="board-empty" id="boardEmpty">ยังไม่มีคะแนนสะสม เริ่มภารกิจแรกได้เลย!</p>
+        </div>
+        <p class="board-footnote">คะแนนเกมรวมสะสมจากทุกครั้งที่เล่น · คะแนน Pre-test/Post-test แสดงค่าเฉลี่ยต่อรอบ</p>
+      </div>
+    </section>
+
+    <section class="screen test-screen hidden" id="testScreen" aria-labelledby="testTitle">
+      <div class="play-topline">
+        <button class="text-button" id="testHomeButton" type="button"><span aria-hidden="true">←</span> กลับหน้าแรก</button>
+        <span class="mission-tag"><span id="testPhaseLabel">แบบทดสอบก่อนเล่น</span> · <span id="testGrade">ป.4</span> · <span id="testPlayerName"></span></span>
+      </div>
+      <div class="test-content">
+        <div class="test-progress-row"><span id="testQuestionNumber">ข้อ 1 จาก 10</span><span>คะแนน <strong id="testScore">0</strong></span></div>
+        <div class="test-progress"><div id="testProgressBar"></div></div>
+        <p class="eyebrow"><span class="eyebrow-line"></span><span id="testEyebrow">PRE-TEST</span></p>
+        <h2 id="testTitle">เลือกคำที่สะกดถูกต้อง</h2>
+        <p class="test-instruction">เลือกคำตอบที่ถูกต้องที่สุด</p>
+        <div class="test-options">
+          <button class="test-option" type="button" data-test-answer="0"></button>
+          <button class="test-option" type="button" data-test-answer="1"></button>
+          <button class="test-option" type="button" data-test-answer="2"></button>
+          <button class="test-option" type="button" data-test-answer="3"></button>
+        </div>
+      </div>
+    </section>
+
+    <section class="screen post-ready-screen hidden" id="postReadyScreen" aria-labelledby="postReadyTitle">
+      <div class="post-ready-card">
+        <div class="ready-mascot" aria-hidden="true"><span class="buddy-character"><span class="buddy-ear ear-left"></span><span class="buddy-ear ear-right"></span><span class="buddy-body"></span><span class="buddy-flipper flipper-left"></span><span class="buddy-flipper flipper-right"></span><span class="buddy-scarf"></span><span class="buddy-head"><span class="buddy-eye eye-left"></span><span class="buddy-eye eye-right"></span><span class="buddy-cheek cheek-left"></span><span class="buddy-cheek cheek-right"></span><span class="buddy-nose"></span><span class="buddy-smile"></span></span></span></div>
+        <p class="eyebrow"><span class="eyebrow-line"></span> CHECKPOINT COMPLETE</p>
+        <h2 id="postReadyTitle">พร้อมทำแบบทดสอบ<br>หลังเล่นหรือยัง?</h2>
+        <p class="post-ready-copy">พักหายใจสักนิด แล้วลองนึกถึงคำที่เพิ่งช่วยให้เราเอาตัวรอด</p>
+        <div class="checkpoint-summary">
+          <span>นักสำรวจ<strong id="postReadyPlayer">-</strong></span>
+          <span>ระดับชั้น<strong id="postReadyGrade">-</strong></span>
+          <span>Pre-test<strong id="postReadyScore">0/10</strong></span>
+          <span>ผลภารกิจ<strong id="postReadyOutcome">รอดชีวิต</strong></span>
+        </div>
+        <button class="primary-button" id="startPostTestButton" type="button"><span>พร้อมแล้ว เริ่ม Post-test</span><span class="button-arrow" aria-hidden="true">↗</span></button>
+        <button class="text-button ready-home-button" id="readyHomeButton" type="button">กลับหน้าแรก</button>
+      </div>
+    </section>
+
+    <section class="screen play-screen hidden" id="playScreen" aria-labelledby="playTitle">
+      <div class="timer-header">
+        <div class="timer-caption"><span class="timer-symbol" aria-hidden="true">◷</span><span>เวลาหนีเอาตัวรอด</span><strong><span id="timeText">35</span><small> วินาที</small></strong></div>
+        <div class="timer-track" role="progressbar" aria-label="เวลาที่เหลือ" aria-valuemin="0" aria-valuemax="60" aria-valuenow="35"><div id="timeBar"></div></div>
+        <div class="game-counter"><span id="questionCount">ข้อ 1 / 10</span><span id="gamePlayerName"></span><span id="gameGrade">ป.4</span></div>
+        <div class="quest-progress" id="questProgress" role="progressbar" aria-label="ความคืบหน้าภารกิจ" aria-valuemin="0" aria-valuemax="10" aria-valuenow="0"><span class="quest-mark"></span><span class="quest-mark"></span><span class="quest-mark"></span><span class="quest-mark"></span><span class="quest-mark"></span><span class="quest-mark"></span><span class="quest-mark"></span><span class="quest-mark"></span><span class="quest-mark"></span><span class="quest-mark"></span></div>
+      </div>
+      <div class="arena-heading"><div class="arena-heading-copy"><p class="eyebrow"><span class="eyebrow-line"></span> เลือกคำที่สะกดถูก</p><h2 id="playTitle">เล็งแล้วต่อยเลย!</h2></div><div class="arena-companion"><div class="play-pal" aria-hidden="true"><span class="buddy-character"><span class="buddy-ear ear-left"></span><span class="buddy-ear ear-right"></span><span class="buddy-body"></span><span class="buddy-flipper flipper-left"></span><span class="buddy-flipper flipper-right"></span><span class="buddy-scarf"></span><span class="buddy-head"><span class="buddy-eye eye-left"></span><span class="buddy-eye eye-right"></span><span class="buddy-cheek cheek-left"></span><span class="buddy-cheek cheek-right"></span><span class="buddy-nose"></span><span class="buddy-smile"></span></span></span></div><p class="arena-help" id="gameFeedback" role="status" aria-live="polite">เล็งมือไปยังมุมของคำตอบ แล้วพุ่งหมัด!</p></div></div>
+      <div class="arena" id="arena">
+        <button class="ice-option arena-ice left-ice left-top-ice" type="button" data-zone="left-top" aria-label="ต่อยก้อนน้ำแข็งซ้ายบน"><span class="ice-facet" aria-hidden="true"></span><span class="ice-glint" aria-hidden="true"></span><span class="ice-index">ซ้ายบน</span><span class="ice-word"></span><span class="ice-crack" aria-hidden="true">✳</span></button>
+        <button class="ice-option arena-ice left-ice left-bottom-ice" type="button" data-zone="left-bottom" aria-label="ต่อยก้อนน้ำแข็งซ้ายล่าง"><span class="ice-facet" aria-hidden="true"></span><span class="ice-glint" aria-hidden="true"></span><span class="ice-index">ซ้ายล่าง</span><span class="ice-word"></span><span class="ice-crack" aria-hidden="true">✳</span></button>
+        <div class="camera-panel">
+          <div class="camera-frame" id="cameraFrame">
+            <video id="cameraVideo" autoplay muted playsinline></video>
+            <canvas id="handCanvas" aria-hidden="true"></canvas>
+            <div class="camera-placeholder" id="cameraPlaceholder"><span class="camera-icon" aria-hidden="true">◎</span><strong>กล้องพร้อมแล้วหรือยัง?</strong><span>อนุญาตการใช้กล้องเพื่อเริ่มจับมือ</span></div>
+            <div class="tracking-label" id="trackingLabel"><span class="tracker-dot"></span> HAND TRACKING</div>
+          </div>
+          <div class="camera-status" id="cameraStatus" role="status">ยังไม่ได้เปิดกล้อง</div>
+        </div>
+        <button class="ice-option arena-ice right-ice right-top-ice" type="button" data-zone="right-top" aria-label="ต่อยก้อนน้ำแข็งขวาบน"><span class="ice-facet" aria-hidden="true"></span><span class="ice-glint" aria-hidden="true"></span><span class="ice-index">ขวาบน</span><span class="ice-word"></span><span class="ice-crack" aria-hidden="true">✳</span></button>
+        <button class="ice-option arena-ice right-ice right-bottom-ice" type="button" data-zone="right-bottom" aria-label="ต่อยก้อนน้ำแข็งขวาล่าง"><span class="ice-facet" aria-hidden="true"></span><span class="ice-glint" aria-hidden="true"></span><span class="ice-index">ขวาล่าง</span><span class="ice-word"></span><span class="ice-crack" aria-hidden="true">✳</span></button>
+        <span class="rolling-snowball snowball-left" aria-hidden="true"></span>
+        <span class="rolling-snowball snowball-right" aria-hidden="true"></span>
+        <div class="arena-overlay" id="gameStartOverlay">
+          <div class="start-card"><span class="start-card-icon" aria-hidden="true">✊</span><strong>พร้อมเอาตัวรอดหรือยัง?</strong><span>คำตอบผิดเวลาจะลด · คำตอบถูกเวลาเพิ่ม</span><button class="primary-button" id="beginRoundButton" type="button"><span>เริ่มจับเวลา</span><span class="button-arrow" aria-hidden="true">↗</span></button></div>
+        </div>
+      </div>
+      <div class="answer-reveal" id="answerReveal" aria-live="polite" aria-atomic="true">
+        <span class="answer-bubble" aria-hidden="true">✦</span>
+        <div class="answer-reveal-copy"><strong id="answerRevealTitle">ต่อยคำที่คิดว่าถูก แล้วดูเฉลย!</strong><p><b id="answerRevealWord" hidden></b><span id="answerRevealNote" hidden></span></p></div>
+        <span class="answer-reveal-mark" aria-hidden="true">📖</span>
+      </div>
+      <div class="arena-footer"><span>ตอบครบ 10 ข้อเพื่อหนีออกจากพายุ</span><span id="inputMode">คลิกก้อนน้ำแข็งเพื่อเลือกแทนได้</span></div>
+    </section>
+
+    <section class="screen game-over-screen hidden" id="gameOverScreen" aria-labelledby="gameOverTitle">
+      <div class="game-over-card">
+        <div class="game-over-mascot" aria-hidden="true"><span class="buddy-character"><span class="buddy-ear ear-left"></span><span class="buddy-ear ear-right"></span><span class="buddy-body"></span><span class="buddy-flipper flipper-left"></span><span class="buddy-flipper flipper-right"></span><span class="buddy-scarf"></span><span class="buddy-head"><span class="buddy-eye eye-left"></span><span class="buddy-eye eye-right"></span><span class="buddy-cheek cheek-left"></span><span class="buddy-cheek cheek-right"></span><span class="buddy-nose"></span><span class="buddy-smile"></span></span></span></div>
+        <p class="eyebrow"><span class="eyebrow-line"></span> TRY AGAIN</p>
+        <h2 id="gameOverTitle">พายุยังไม่ยอมแพ้!</h2>
+        <p class="game-over-message" id="gameOverMessage">พักหายใจ แล้วกลับไปช่วยกันต่อยน้ำแข็งอีกครั้ง</p>
+        <div class="retry-summary"><span>นักสำรวจ<strong id="gameOverPlayer">-</strong></span><span>ระดับ<strong id="gameOverGrade">-</strong></span><span>รอบที่<strong id="gameOverAttempt">1</strong></span><span>ตอบถูก<strong id="gameOverCorrect">0/10</strong></span></div>
+        <button class="primary-button retry-game-button" id="retryGameButton" type="button"><span>ลองใหม่อีกครั้ง</span><span class="button-arrow" aria-hidden="true">↻</span></button>
+        <button class="text-button game-over-home-button" id="gameOverHomeButton" type="button">กลับหน้าแรก</button>
+      </div>
+    </section>
+
+    <section class="screen result-screen hidden" id="resultScreen" aria-labelledby="resultTitle">
+      <p class="eyebrow"><span class="eyebrow-line"></span> EXPEDITION REPORT</p>
+      <div class="result-mark" aria-hidden="true">✦</div>
+      <h2 id="resultTitle">รายงานภารกิจ</h2>
+      <p class="result-copy" id="resultMessage"></p>
+      <div class="result-score"><span>ผลการสะกดคำ</span><div class="score-comparison"><strong><span id="preScoreResult">0</span><small> ก่อนเล่น</small></strong><span class="score-arrow" aria-hidden="true">→</span><strong><span id="postScoreResult">0</span><small> หลังเล่น</small></strong></div></div>
+      <div class="result-stats"><div><strong id="gameOutcome">รอด</strong><span>ผลภารกิจ</span></div><div><strong id="gameCorrectResult">0/10</strong><span>ตอบถูกในเกม</span></div><div><strong id="improvementResult">+0</strong><span>พัฒนาการ</span></div></div>
+      <button class="primary-button replay-button" id="replayButton" type="button"><span>เริ่มภารกิจใหม่</span><span class="button-arrow" aria-hidden="true">↗</span></button>
+      <button class="text-button back-button" id="backButton" type="button">กลับหน้าเริ่มต้น</button>
+    </section>
+  </main>
+</body>
+</html>
